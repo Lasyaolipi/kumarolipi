@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-website-service
+  namespace: website  # Namespace added
+spec:
+  type: ClusterIP
+  selector:
+    app: my-website  # Matches the deployment labels
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
