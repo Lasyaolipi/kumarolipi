@@ -1,10 +1,9 @@
-name: Deploy Static Website
+name: Build, Test, and Deploy Static Website
 
 on:
   push:
-   # branches: [ master ]   # or 'master' if your repo uses that branch
+    branches: [ master ]   # 👈 changed from 'main' to 'master'
 
-# 👇 REQUIRED permissions for GitHub Pages OIDC deployment
 permissions:
   contents: read
   pages: write
@@ -20,18 +19,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: List project files
-        run: ls -R
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install HTML Validator
+        run: npm install -g html-validate
 
       - name: Validate HTML syntax
-        uses: chabad360/html-proofer@v1.3
-        with:
-          directory: .
-          arguments: --disable-external
+        run: html-validate "**/*.html"
+
       - name: Archive build artifacts
         run: |
           mkdir build
           cp -r * build/
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -39,7 +42,7 @@ jobs:
           path: build/
 
   # ----------------------------
-  # 2️⃣ Test Job (runs after build)
+  # 2️⃣ Test Job (runs after Build)
   # ----------------------------
   test:
     runs-on: ubuntu-latest
@@ -51,16 +54,16 @@ jobs:
           name: website-build
           path: build/
 
-      - name: Check for broken links (basic validation)
+      - name: Check for broken links
         uses: gaurav-nelson/github-action-html-link-check@v1
         with:
           directory: build/
 
       - name: Confirm test completion
-        run: echo "✅ All basic tests passed!"
+        run: echo "✅ All tests passed successfully!"
 
   # ----------------------------
-  # 3️⃣ Deploy Job (runs after test)
+  # 3️⃣ Deploy Job (runs after Test)
   # ----------------------------
   deploy:
     runs-on: ubuntu-latest
@@ -70,23 +73,4 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v3
-
-      - name: Download tested build
-        uses: actions/download-artifact@v4
-        with:
-          name: website-build
-          path: .
-
-      - name: Upload artifact to Pages
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: .
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Checkout
