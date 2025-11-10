@@ -2,7 +2,7 @@ name: Deploy Static Website
 
 on:
   push:
-    branches: [ main ]   # or 'master' if your repo uses that branch
+    branches: [ master ]   # or 'master' if your repo uses that branch
 
 # 👇 REQUIRED permissions for GitHub Pages OIDC deployment
 permissions:
