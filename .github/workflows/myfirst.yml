@@ -11,20 +11,33 @@ permissions:
   id-token: write
 
 jobs:
-  deploy:
+  # ----------------------------
+  # 1️⃣ Build Job
+  # ----------------------------
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v3
-
-      - name: Upload static files
-        uses: actions/upload-pages-artifact@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          path: .   # your index.html is in the repo root
+          node-version: 18
 
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v4
+      - name: Install HTML Validator
+        run: npm install -g html-validate
+
+      - name: Validate HTML syntax
+        run: html-validate "**/*.html"
+
+      - name: Archive build artifacts
+        run: |
+          mkdir build
+          cp -r * build/
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: website-build
+          path: build/
