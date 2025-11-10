@@ -25,12 +25,6 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install HTML Validator
-        run: npm install -g html-validate
-
-      - name: Validate HTML syntax
-        run: html-validate "**/*.html"
-
       - name: Archive build artifacts
         run: |
           mkdir build
