@@ -24,11 +24,10 @@ jobs:
         run: ls -R
 
       - name: Validate HTML syntax
-        uses: Cyb3r-Jak3/html5validator-action@v2
+        uses: chabad360/html-proofer@v1.3
         with:
-          root: .
-          blacklist: "assets"  # skip image folders if needed
-
+          directory: .
+          arguments: --disable-external
       - name: Archive build artifacts
         run: |
           mkdir build
