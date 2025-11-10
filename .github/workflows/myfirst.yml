@@ -1,0 +1,30 @@
+name: Deploy Static Website
+
+on:
+  push:
+   # branches: [ master ]   # or 'master' if your repo uses that branch
+
+# 👇 REQUIRED permissions for GitHub Pages OIDC deployment
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+
+      - name: Upload static files
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .   # your index.html is in the repo root
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
